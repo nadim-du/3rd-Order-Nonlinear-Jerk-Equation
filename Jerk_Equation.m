@@ -2,7 +2,7 @@
 close all;
 clear all;
 clc
-nnn=10;
+nnn=27;
 %Defining_JerK_Equation
 syms t x(i) y  e s z C w h k yex ypp yp x2(i) zp x3(i) x4(i) r zpp D E
 f(t,yp)=-yp;
@@ -13,7 +13,7 @@ y1=0;
 y2=0;
 y3=0;
 y4=0;
-for i=0:100
+for i=0:30
     y1=y1+e^i*x(i);
     y2=y2+e^i*x2(i);
     y3=y3+e^i*x3(i);
@@ -32,9 +32,6 @@ B1=A1;
 B2=A2;
 for k=0:j
     B1=subs(B1,x(k),zp(k+1));
-    B1=subs(B1,x2(k),z(k+1));
-    B1=subs(B1,x3(k),zp(k+1));
-    B1=subs(B1,x4(k),zpp(k+1));
     B2=subs(B2,x2(k),z(k+1));
     B2=subs(B2,x3(k),zp(k+1));
     B2=subs(B2,x4(k),zpp(k+1));
@@ -52,17 +49,25 @@ for i=1:nnn+2
 end
 %Calculeted_solution_compared_with_exact_solution
 aa=0;
-bb=1;
+bb=20;
 hh=0.125;
 n=(bb-aa)/hh;
 fprintf('Time       Calculated Value    Exact Value        Absolute Error\n\n')
 for i=1:n
     tt=aa+i*hh;
+    tt2(i)=tt;
     yy=subs(r(nnn),t,tt);
     BB=0.2;
     ga=2*sqrt(1/(4-BB^2));
-    yex=(BB/ga)*sin(ga*x)+(BB/(96*ga^3))*((-9*BB^2*ga^2-48+48*ga^2)*sin(ga*x)+(12*ga^3*BB^2-48*ga^3+48*ga)*x*cos(ga*x)-BB^2*ga^2*sin(3*ga*x));
+    yex=(BB/ga)*sin(ga*x)+(BB/(96*ga^3))*((-9*BB^2*ga^2-48+48*ga^2)*sin(ga*x)-BB^2*sin(3*ga*x));
     yy1=subs(yex,x,tt);
+     yy2(i)=double(yy);
+     yy3(i)=yy1;
     er=abs(double(yy)-double(yy1));
     fprintf('%1.4f %18.13f  %18.13f  %18.9f\n',tt,double(yy),double(yy1),double(er))
 end
+
+h1=plot(tt2, yy2, 'r', tt2, yy3,'b*')
+xlabel('x value')
+ylabel('y value')
+leg=legend('calculated value ', 'exact value')
